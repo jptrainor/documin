@@ -1638,7 +1638,7 @@ General Public License for more details.  You should have received a
 copy of the GNU General Public License along with this program.  If
 not, see
 <a href="http://www.gnu.org/licenses/">http://www.gnu.org/licenses/</a></p>
-<p>Documin was derived <a href="http://encode-explorer.siineiolekala.net">Encode Explorer</a>.
+<p>Documin was derived from <a href="http://encode-explorer.siineiolekala.net">Encode Explorer</a>.
 The icon images were designed by <a href="http://www.famfamfam.com">Mark James</a>
 and distributed under the Creative Commons Attribution 3.0 License.</p>
 <p>Version 0.9.0 (2 June 2014)</p>
