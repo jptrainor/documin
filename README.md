@@ -23,7 +23,7 @@
 * No security implemented by the web interface beyond the add-only interface.
     * Security is left to the underlying web server and file system configuration.
 
-## Anti-Requirements
+## Non-Requirements
 
 *documin* is intentionally simple. It was specifically _not_ created to meet the following requirements and likely never will be modified to do so, even though it may be tempting and technically feasible:
 
