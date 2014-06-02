@@ -20,7 +20,7 @@
 * Trivially simple to deploy.
 * No need to index the entire file set in order to get started. The system becomes aware of a file the first time it is accessed by the browser.
 * Ability to index, or reindex, the entire database.
-	** And this is safe - consequence free - operation, other than the time it takes.
+** And this is safe - consequence free - operation, other than the time it takes.
 * No security implemented by the web interface beyond the write-only interface.
 ** Security is left to the underlying web server and file system configuration.
 
