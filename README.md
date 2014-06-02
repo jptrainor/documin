@@ -29,12 +29,12 @@
 *documin* is intentionally simple. It was specifically _not_ created to meet the following requirements and likely never will be modified to do so, even though it may be tempting and technically feasible:
 
 * Text search of the indexed files.
-    * This is better handled by a dedicated search system.
-** The integrate with such a system *documin* may expose a list of the files it has under management - that's it.
+   * This is better handled by a dedicated external search system.
+   * To integrate with such a system *documin* may expose a list of the files it has under management - that's it.
 * File deletion, movement, user security, file admin, etc.
-** *documin* is specifically intended to provide a write-only interface. A system administrator has can do all other necessary management via ordinary file system interfaces.
-    * An exception may be implemented to permit users to undo an operation. But it would be limited to a single session and time window.
-* Support for file thumbnails, fancy image browsing, icon support of a wide variety of file types (a limited set is okay), any sort of server side image generation.
+   * *documin* is specifically intended to provide an add-only write interface. A system administrator can do all other necessary management via ordinary file system interfaces.
+      * An exception may be implemented to permit users to undo an operation. But it would be limited to a single session and time window.
+* No support for file thumbnails, fancy image browsing, icon support of a wide variety of file types (a limited set is okay), any sort of server side image preview generation.
 
 ## Getting Started
 
