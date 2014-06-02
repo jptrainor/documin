@@ -1,5 +1,8 @@
 # documin
+
 *documin* is a minimal document management system. It provides a simple means of managing small file archives where files can both be browsed hierarchically by users and referenced by ID via a web interface accessed by external systems. It was originally created to link financial records to an accounting system.
+
+<center>![screehshot](etc/documin-screenshot.jpg)</center>
 
 ## Requirements
 
