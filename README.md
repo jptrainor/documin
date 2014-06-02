@@ -9,10 +9,12 @@
 *documin* was created to meet the following requirements:
 
 * Web browser interface to an ordinary file system where file records are archived.
-* Write only access to the archive file system, via a web browser, in order to add to new files and directories.
-* Reference files by ID added as a query parameter to simple URL.
+* Write access to the archive file system, via a web browser, in order to add to new files and directories.
+** No ability to modify or delete files - i.e. an "add only" interface.
+* Reference files by ID as a query parameter to a simple URL.
 * References by ID are unaffected by reorganization of the files (e.g. manually changing the layout of directory tree used to organize the files), moving to a different server, changing the database, restoring the files from a backup, etc.
-* Identify archived fuel duplication.
+* Identify archived file duplication.
+** Same file stored in two different places.
 ** Both files share the same ID but the system must beware of their differing locations.
 * Little to no need to maintain a database, or even be aware of the existence of a database.
 * Trivially simple to deploy.
