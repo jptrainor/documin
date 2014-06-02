@@ -10,30 +10,30 @@
 
 * Web browser interface to an ordinary file system where file records are archived.
 * Write access to the archive file system, via a web browser, in order to add to new files and directories.
-** No ability to modify or delete files - i.e. an "add only" interface.
+    * No ability to modify or delete files - i.e. an "add only" interface.
 * Reference files by ID as a query parameter to a simple URL.
 * References by ID are unaffected by reorganization of the files (e.g. manually changing the layout of directory tree used to organize the files), moving to a different server, changing the database, restoring the files from a backup, etc.
 * Identify archived file duplication.
-** Same file stored in two different places.
-** Both files share the same ID but the system must beware of their differing locations.
+    * Same file stored in two different places.
+    * Both files share the same ID but the system must beware of their differing locations.
 * Little to no need to maintain a database, or even be aware of the existence of a database.
 * Trivially simple to deploy.
 * No need to index the entire file set in order to get started. The system becomes aware of a file the first time it is accessed by the browser.
 * Ability to index, or reindex, the entire database.
-** And this is safe - consequence free - operation, other than the time it takes.
+    * And this is safe - consequence free - operation, other than the time it takes.
 * No security implemented by the web interface beyond the write-only interface.
-** Security is left to the underlying web server and file system configuration.
+    * Security is left to the underlying web server and file system configuration.
 
 ## Anti-Requirements
 
 *documin* is intentionally simple. It was specifically _not_ created to meet the following requirements and likely never will be modified to do so, even though it may be tempting and technically feasible:
 
 * Text search of the indexed files.
-** This is better handled by a dedicated search system.
+    * This is better handled by a dedicated search system.
 ** The integrate with such a system *documin* may expose a list of the files it has under management - that's it.
 * File deletion, movement, user security, file admin, etc.
 ** *documin* is specifically intended to provide a write-only interface. A system administrator has can do all other necessary management via ordinary file system interfaces.
-** An exception may be implemented to permit users to undo an operation. But it would be limited to a single session and time window.
+    * An exception may be implemented to permit users to undo an operation. But it would be limited to a single session and time window.
 * Support for file thumbnails, fancy image browsing, icon support of a wide variety of file types (a limited set is okay), any sort of server side image generation.
 
 ## Getting Started
