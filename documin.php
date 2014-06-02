@@ -315,8 +315,8 @@ div.breadcrumbs a{
 	font-size:small;
 }
 
-/* help link */
-div.helplink {
+/* admin link */
+div.adminlink {
        float: right;
 }
 
@@ -1414,7 +1414,7 @@ class Documin
         print "</a>\n";
       }
 ?>
-<div class="helplink"><a href="?help">?</a></div>
+<div class="adminlink"><a href="?admin">?</a></div>
 </div>
 <?php
     }
@@ -1620,13 +1620,13 @@ class FileIndexer
 }
 
 //
-// Handle a help request
+// Handle a admin request
 //
-class HelpRequest
+class AdminRequest
 {
-  public static function handleHelpRequest()
+  public static function handleAdminRequest()
   {
-    if (isset($_GET['help'])) {
+    if (isset($_GET['admin'])) {
 
 ?>
 <p><b>documin - minimal document management system</b><br>
@@ -1668,7 +1668,7 @@ Admin commands:
 //
 
 if      ( ImageServer::handleImageRequest()     ) {}
-else if ( HelpRequest::handleHelpRequest()      ) {}
+else if ( AdminRequest::handleAdminRequest()    ) {}
 else if ( FileRedirector::handleFileRedirect()  ) {}
 else if ( Database::handleRemoveRequest()       ) {}
 else if ( FileIndexer::handleFileIndexRequest() ) {}
