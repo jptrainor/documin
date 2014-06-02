@@ -37,9 +37,7 @@
 
 ## Getting Started
 
-Configure your web server to expose a file system directory that you want to manage. On a simple linux that may be as simple as creating a directory in /var/www.
-
-Copy documin.php to the root of the managed directory tree. Optionally rename documin.php to index.php. Optionally review and change the configuration settings in documin.php.
+Configure your web server to expose a file system directory that you want to manage. Copy documin.php to the root of the managed directory tree. Optionally rename documin.php to index.php. Be sure the directory is writable by the web server process. Optionally review and change the configuration settings in documin.php. That's it, you're done!
 
 ## Referencing Files By ID
 
