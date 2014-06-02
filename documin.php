@@ -30,9 +30,7 @@ $_START_TIME = microtime(TRUE);
  *   Configuration 
  ***************************************************************************/
 
-/* 
- * Document database file.
- */
+// Document database file.
 $_CONFIG['dbfile'] = 'documin.sqlite';
 
 // Choose a language. (Only "en" for now.)
@@ -126,9 +124,9 @@ $_TRANSLATIONS["en"] = array(
   "file_sum_size" => "%s managed"
 );
 
-/***************************************************************************/
-/*   CSS FOR TWEAKING THE DESIGN                                           */
-/***************************************************************************/
+/***************************************************************************
+ *  CSS Styles
+ ***************************************************************************/
 
 function css()
 {
@@ -1293,9 +1291,7 @@ class Documin
     global $_TRANSLATIONS;
     if (isset($_TRANSLATIONS[$lang]) && is_array($_TRANSLATIONS[$lang]) && isset($_TRANSLATIONS[$lang][$stringName]))
       return $_TRANSLATIONS[$lang][$stringName];
-    else if (isset($_TRANSLATIONS["en"])) // && is_array($_TRANSLATIONS["en"]) 
-      
-    //&& isset($_TRANSLATIONS["en"][$stringName]))
+    else if (isset($_TRANSLATIONS["en"]) && is_array($_TRANSLATIONS["en"]) && isset($_TRANSLATIONS["en"][$stringName]))
       return $_TRANSLATIONS["en"][$stringName];
     else
       return "Translation error";
