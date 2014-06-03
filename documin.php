@@ -150,25 +150,30 @@ A:hover {
 	text-decoration: underline;
 }
 
-#top {
+#top_image {
 	width:100%;
-	padding-bottom: 20px;
+        background: url( "?img=file_cabinet_large" );
+        background-repeat: repeat-x;
+        background-position: center;
+        height: 128px;
+        align: center;
 }
 
-#top a span, #top a:hover, #top a span:hover{
+#top_title div {
+        width: 100%;
+}
+
+#top_title a  {
+        display:block;
+}
+
+#top_title a span {
 	color:#68a9d2;
 	font-weight:bold;
-	text-align:center;
 	font-size:large;
-}
-
-#top a {
-	display:block;
-	padding:20px 0 0 0;
-}
-
-#top span {
-	display:block;
+	padding: 10;
+        display:block;
+        text-align:center;
 }
 
 div.subtitle{
@@ -332,6 +337,93 @@ div.adminlink {
  ***************************************************************************/
 
 $_IMAGES = array();
+
+$_IMAGES["file_cabinet_large"] = "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";
 
 $_IMAGES["arrow_down"] = "iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAQAAAC1+jfqAAAABGdBTUEAAK/INwWK6QAAABl0RVh0
 U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAABbSURBVCjPY/jPgB8yDCkFB/7v+r/5/+r/
@@ -1386,13 +1478,9 @@ class Documin
 <?php
     if (Documin::getConfig('show_top') == true) {
 ?>
-<div id="top">
-	<a href="<?php
-      print $this->makeLink(false, false, null, null, null, "");
-?>"><span><?php
-      if (Documin::getConfig('main_title') != null)
-        print Documin::getConfig('main_title');
-?></span></a>
+<div id="top_image"></div>
+<div id="top_title">
+<a href="<?php print $this->makeLink(false, false, null, null, null, "");?>"><span><?php print Documin::getConfig('main_title');?></span></a>
 </div>
 <?php
     }
