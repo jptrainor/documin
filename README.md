@@ -15,7 +15,7 @@
 * References by ID are unaffected by reorganization of the files (e.g. manually changing the layout of directory tree used to organize the files), moving to a different server, changing the database, restoring the files from a backup, etc.
 * Identify archived file duplication.
     * Same file stored in two different places.
-    * Both files share the same ID but the system must beware of their differing locations.
+    * Both files share the same ID and the system must beware of their differing locations. This situation is identified for the user when they access the file.
 * Little to no need to maintain a database, or even be aware of the existence of a database.
 * Trivially simple to deploy.
 * No need to index the entire file set in order to get started. The system becomes aware of a file the first time it is accessed by the browser.
