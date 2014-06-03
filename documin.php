@@ -1448,6 +1448,7 @@ class Documin
     print $this->getConfig('lang');
 ?>">
 <head>
+<link rel="shortcut icon" href="?img=file_cabinet_large"/>
 <meta name="viewport" content="width=device-width" />
 <meta http-equiv="Content-Type" content="text/html; charset=<?php
     print $this->getConfig('charset');
