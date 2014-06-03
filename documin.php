@@ -57,7 +57,7 @@ $_CONFIG['show_info'] = true;
 // The time format for the "last changed" column.
 $_CONFIG['time_format'] = "d.m.y H:i:s";
 
-// Charset. Use the one that suits for you. 
+// Charset. Use the one that is suitable for you. 
 $_CONFIG['charset'] = "UTF-8";
 
 // Regular expression to match files that should be hidden.
