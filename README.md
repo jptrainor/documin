@@ -62,4 +62,4 @@ The admin interface provides the ability to delete the document database and to 
 The simple single file structure of documin.php was inspired by, and derived from, [Encode Explorer] (http://encode-explorer.siineiolekala.net). Everything that didn't meet the *documin* requirements was removed from the original Encode Explorer code. New code was added to support file id generation, database management, and file linking by id.
 
 Jim Trainor  
-2 June 2014
+3 June 2014
