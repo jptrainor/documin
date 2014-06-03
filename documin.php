@@ -22,7 +22,7 @@
  * and distributed under the Creative Commons Attribution 3.0
  * License. The file_cabinet image came from
  * http://commons.wikimedia.org/wiki/File:Replacement_filing_cabinet.svg
- * and is the public domain.
+ * and is in the public domain.
  */
 
 $_CONFIG     = array();
