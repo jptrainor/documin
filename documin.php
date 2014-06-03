@@ -340,7 +340,11 @@ div.adminlink {
 
 $_IMAGES = array();
 
+$_IMAGES_CONTENT_TYPE = array();
+$_IMAGES_CONTENT_TYPE_DEFAULT = "gif";
+
 // thanks, http://commons.wikimedia.org/wiki/File:Golden_file_cabinet.png
+$_IMAGES_CONTENT_TYPE["file_cabinet"] = "png"; 
 $_IMAGES["file_cabinet"] = 
 "iVBORw0KGgoAAAANSUhEUgAAAIAAAAB9CAYAAABqMmsMAAAABHNCSVQICAgIfAhkiAAAAAlwSFlz
 AAAI3AAACNwBn+hfPAAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAABowSURB
@@ -650,9 +654,15 @@ class ImageServer
           header('HTTP/1.1 304 Not Modified');
           return true;
         } else {
+          
+          $contentType = $_IMAGES_CONTENT_TYPE_DEFAULT;
+          if (isset($_IMAGES[$_GET['img']]) && isset($_IMAGES_CONTENT_TYPE[$_GET['img']])) {
+             $contentType = $_IMAGES_CONTENT_TYPE[$_GET['img']];
+          }
+
           header('ETag: "' . $etag . '"');
           header('Last-Modified: ' . $mtime);
-          header('Content-type: image/gif');
+          header('Content-type: image/' . $contentType);
           if (isset($_IMAGES[$_GET['img']]))
             print base64_decode($_IMAGES[$_GET['img']]);
           else
