@@ -9,7 +9,7 @@
 *documin* was created to meet the following requirements:
 
 * Web browser interface to an ordinary file system where file records are archived.
-* Write access to the archive file system, via a web browser, in order to add to new files and directories.
+* Write access to the archive file system, via a web browser, in order to add new files and directories.
     * No ability to modify or delete files - i.e. an "add only" interface.
 * Reference files by ID as a query parameter to a simple URL.
 * References by ID are unaffected by reorganization of the files (e.g. manually changing the layout of directory tree used to organize the files), moving to a different server, changing the database, restoring the files from a backup, etc.
