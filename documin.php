@@ -1232,7 +1232,7 @@ class FileRedirector
 }
 
 //
-// The main documein class that implemetns the files browser.
+// The main documin class that implemetns the files browser.
 //
 $documin = null;
 class Documin
