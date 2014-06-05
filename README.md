@@ -4,6 +4,10 @@
 
 <center>![screehshot](etc/documin-screenshot.jpg)</center>
 
+## Getting Started
+
+Configure your web server to expose a file system directory that you want to manage. Copy documin.php to the root of the managed directory tree. Optionally rename documin.php to index.php. Be sure the directory is writable by the web server process. Optionally review and change the configuration settings in documin.php. That's it, you're done!
+
 ## Requirements
 
 *documin* was created to meet the following requirements:
@@ -34,10 +38,6 @@
    * *documin* is specifically intended to provide an add-only write interface. A system administrator can do all other necessary management via ordinary file system interfaces.
       * An exception may be implemented to permit users to undo an operation. But it would be limited to a single session and time window.
 * No support for file thumbnails, fancy image browsing, icon support of a wide variety of file types (a limited set is okay), any sort of server side image preview generation.
-
-## Getting Started
-
-Configure your web server to expose a file system directory that you want to manage. Copy documin.php to the root of the managed directory tree. Optionally rename documin.php to index.php. Be sure the directory is writable by the web server process. Optionally review and change the configuration settings in documin.php. That's it, you're done!
 
 ## Referencing Files By ID
 
