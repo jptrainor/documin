@@ -61,7 +61,7 @@ $_CONFIG['time_format'] = "d.m.y H:i:s";
 $_CONFIG['charset'] = "UTF-8";
 
 // Regular expression to match files that should be hidden.
-$_CONFIG['hidden_file_regex'] = "/^\\.|~$|index.php|documin.php|documin.db|documin.sqlite/";
+$_CONFIG['hidden_file_regex'] = "/^\\.|~$|index.php|documin.php|documin.sqlite/";
 
 // Regular expression to match directories that should be hidden.
 $_CONFIG['hidden_dir_regex'] = "";
