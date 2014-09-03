@@ -704,8 +704,10 @@ class Database
 
   const SQL_INSERT_HISTORY = "INSERT INTO history (path, op, undone, timestamp) VALUES (?, ?, 0, strftime('%s'))";
 
-  // select last file upload operation if it is not more than three minutes old
-  const SQL_SELECT_LAST_HISTORY = "SELECT id FROM (SELECT id, op, timestamp FROM history WHERE undone=0 ORDER BY id DESC LIMIT 1) WHERE op='uploadfile' AND strftime('%s') - timestamp < 18000";
+  // Select last file upload operation if it is not more than five 
+  // minutes old. (Translation: the user has five minutes to execute
+  // the undo.) The sqlite time stamp has one second resolution.
+  const SQL_SELECT_LAST_HISTORY = "SELECT id FROM (SELECT id, op, timestamp FROM history WHERE undone=0 ORDER BY id DESC LIMIT 1) WHERE op='uploadfile' AND strftime('%s') - timestamp < 300";
 
   const SQL_SELECT_PATH_HISTORY = "SELECT path FROM history WHERE id=?";
 
