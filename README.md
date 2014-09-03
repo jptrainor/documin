@@ -14,7 +14,8 @@ Configure your web server to expose a file system directory that you want to man
 
 * Web browser interface to an ordinary file system where file records are archived.
 * Write access to the archive file system, via a web browser, in order to add new files and directories.
-    * No ability to modify or delete files - i.e. an "add only" interface.
+    * No ability to modify files - i.e. an "add only" interface.
+			* Limited ability to delete files and directories in the form of a time limited undo operation.
 * Reference files by ID as a query parameter to a simple URL.
 * References by ID are unaffected by reorganization of the files (e.g. manually changing the layout of directory tree used to organize the files), moving to a different server, changing the database, restoring the files from a backup, etc.
 * Identify archived file duplication.
@@ -36,7 +37,7 @@ Configure your web server to expose a file system directory that you want to man
    * To integrate with such a system *documin* may expose a list of the files it has under management - that's it.
 * File deletion, movement, user security, file admin, etc.
    * *documin* is specifically intended to provide an add-only write interface. A system administrator can do all other necessary management via ordinary file system interfaces.
-      * An exception may be implemented to permit users to undo an operation. But it would be limited to a single session and time window.
+      * An exception is that the user is permit to undo an operation completed in the prior minutes.
 * No support for file thumbnails, fancy image browsing, icon support of a wide variety of file types (a limited set is okay), any sort of server side image preview generation.
 
 ## Referencing Files By ID
@@ -59,7 +60,4 @@ The admin interface provides the ability to delete the *documin* database and to
 
 ## Credits
 
-The simple single file structure of documin.php was inspired by, and derived from, [Encode Explorer] (http://encode-explorer.siineiolekala.net). Everything that didn't meet the *documin* requirements was removed from the original Encode Explorer code. New code was added to support file id generation, database management, and file linking by id.
-
-Jim Trainor  
-3 June 2014
+The simple single file structure of documin.php was inspired by, and derived from, [Encode Explorer] (http://encode-explorer.siineiolekala.net). Everything that didn't meet the *documin* requirements was removed from the original Encode Explorer code. New code was added to support file id generation, database management, and file linking by id. The database is [SQLite](http://www.sqlite.org).
