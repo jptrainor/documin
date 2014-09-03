@@ -693,20 +693,20 @@ class ImageServer
 class Database
 {
   const SQL_CREATE_DATABASE = "
-      CREATE TABLE IF NOT EXISTS history (id INTEGER PRIMARY KEY ASC, path TEXT, op TEXT, timestamp INTEGER);
+      CREATE TABLE IF NOT EXISTS history (id INTEGER PRIMARY KEY ASC, path TEXT, op TEXT, undone BOOLEAN, timestamp INTEGER);
       CREATE TABLE IF NOT EXISTS file (id TEXT, size INTEGER, path TEXT);
       CREATE INDEX IF NOT EXISTS file_id_idx ON file(id);
       CREATE UNIQUE INDEX IF NOT EXISTS file_path_idx ON file(path);
      ";
 
-  const SQL_INSERT_HISTORY = "INSERT INTO history (path, op, timestamp) VALUES (?, ?, strftime('%s'))";
+  const SQL_INSERT_HISTORY = "INSERT INTO history (path, op, undone, timestamp) VALUES (?, ?, 0, strftime('%s'))";
 
   // select last file upload operation if it is not more than three minutes old
-  const SQL_SELECT_LAST_HISTORY = "SELECT id FROM (SELECT id, op, timestamp FROM history ORDER BY id DESC LIMIT 1) WHERE op='uploadfile' AND strftime('%s') - timestamp < 18000";
+  const SQL_SELECT_LAST_HISTORY = "SELECT id FROM (SELECT id, op, timestamp FROM history WHERE undone=0 ORDER BY id DESC LIMIT 1) WHERE op='uploadfile' AND strftime('%s') - timestamp < 18000";
 
   const SQL_SELECT_PATH_HISTORY = "SELECT path FROM history WHERE id=?";
 
-  const SQL_DELETE_HISTORY = "DELETE FROM history WHERE id=?";
+  const SQL_UPDATE_HISTORY_UNDONE = "UPDATE history SET undone=1 WHERE id=?";
 
   const SQL_INSERT_FILE = "INSERT INTO file VALUES (?, ?, ?)";
   
@@ -803,7 +803,13 @@ class Database
   }
 
   public function getLastUploadForUndoIfExists() {
-    return $this->db->query(self::SQL_SELECT_LAST_HISTORY)->fetchColumn();
+    $result = $this->db->query(self::SQL_SELECT_LAST_HISTORY);
+    if ($result != null) {
+       return $result->fetchColumn();
+    }
+    else {
+       return null;
+    }
   }
 
   public function getHistoryPathById($id) {
@@ -823,8 +829,8 @@ class Database
     $stmnt->execute(array($path));
   }
 
-  public function deleteHistoryById($id) {
-    $stmnt = $this->db->prepare(self::SQL_DELETE_HISTORY);
+  public function undoHistoryById($id) {
+    $stmnt = $this->db->prepare(self::SQL_UPDATE_HISTORY_UNDONE);
     $stmnt->execute(array($id));
   }
 }
@@ -911,13 +917,13 @@ class FileManager
   function undo($location, $historyid) {
     $path = $this->database->getHistoryPathById($historyid);
     if ($path != null) {
-    print "DELETE " . $path;
+
       // delete the file
       $fullFilePath = $location->getBasePath() . "/" . $path;
       unlink($fullFilePath);
 
       // delete the history record
-      $this->database->deleteHistoryById($historyid);
+      $this->database->undoHistoryById($historyid);
       $this->database->deleteFileByPath($path);
     }
   }
