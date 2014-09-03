@@ -701,10 +701,12 @@ class Database
 
   const SQL_INSERT_HISTORY = "INSERT INTO history (path, op, timestamp) VALUES (?, ?, strftime('%s'))";
 
-  // select last file upload operation if it is not more than three minutes old
-  const SQL_SELECT_LAST_HISTORY = "SELECT id FROM (SELECT id, op, timestamp FROM history ORDER BY id DESC LIMIT 1) WHERE op='uploadfile' AND strftime('%s') - timestamp < 18000";
+  // select last file upload operation if it is not more than 5 minutes old
+  const SQL_SELECT_LAST_HISTORY = "SELECT id FROM (SELECT id, op, timestamp FROM history ORDER BY id DESC LIMIT 1) WHERE op='uploadfile' AND strftime('%s') - timestamp < 600";
 
   const SQL_SELECT_PATH_HISTORY = "SELECT path FROM history WHERE id=?";
+
+  const SQL_DELETE_HISTORY = "DELETE FROM history WHERE id=?";
 
   const SQL_INSERT_FILE = "INSERT INTO file VALUES (?, ?, ?)";
   
@@ -795,6 +797,11 @@ class Database
       $this->insertHistoryStmnt = $this->db->prepare(self::SQL_INSERT_HISTORY);
     }
 
+    // clean up relatives paths to strip leading "./" if it is there
+    if ( 0 == strpos($uploadFilePath, "./") ) {
+      $uploadFilePath = substr($uploadFilePath, 2);
+    }
+
     $this->insertHistoryStmnt->execute(array($uploadFilePath, "uploadfile"));
   }
 
@@ -812,6 +819,11 @@ class Database
       assert(count($all) == 1);
       return $all[0];
     }
+  }
+
+  public function deleteHistoryById($id) {
+    $stmnt = $this->db->prepare(self::SQL_DELETE_HISTORY);
+    $stmnt->execute(array($id));
   }
 }
 
@@ -893,12 +905,28 @@ class FileManager
     // Add a history record for this operation.
     $this->database->addUploadHistory($location->stripBasePath($upload_file));
   }
-    
+
+  function undo($location, $historyid) {
+    $path = $this->database->getHistoryPathById($historyid);
+    if ($path != null) {
+      // delete the file
+      $fullFilePath = $location->getBasePath() . "/" . $path;
+      unlink($fullFilePath);
+
+      // delete the history record
+      $this->database->deleteHistoryById($historyid);
+    }
+  }
+
   //
   // The main function, checks if the user wants to perform any supported operations
-  // 
+  //
   function run($location)
   {
+    if (isset($_POST['undoid']) && strlen($_POST['undoid']) > 0) {
+      $this->undo($location, $_POST['undoid']);
+    }
+
     if (isset($_POST['userdir']) && strlen($_POST['userdir']) > 0) {
       if ($location->uploadAllowed()) {
         $this->newFolder($location, $_POST['userdir']);
@@ -1733,7 +1761,7 @@ class Documin
    <form name="undo" method="post">
       <span class="undolabel">Added: <?php print $this->database->getHistoryPathById($historyId);?></span>
       <input name="undoid" type="hidden" value="<?php print $historyId; ?>"/>
-      <input name="undoop" type="submit" value="Undo (not implemented yet)" class="undo_submit" />
+      <input name="undoop" type="submit" value="Undo" class="undo_submit" />
    </form>
 </div>
 <?php } ?>
