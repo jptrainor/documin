@@ -701,8 +701,8 @@ class Database
 
   const SQL_INSERT_HISTORY = "INSERT INTO history (path, op, timestamp) VALUES (?, ?, strftime('%s'))";
 
-  // select last file upload operation if it is not more than 5 minutes old
-  const SQL_SELECT_LAST_HISTORY = "SELECT id FROM (SELECT id, op, timestamp FROM history ORDER BY id DESC LIMIT 1) WHERE op='uploadfile' AND strftime('%s') - timestamp < 600";
+  // select last file upload operation if it is not more than three minutes old
+  const SQL_SELECT_LAST_HISTORY = "SELECT id FROM (SELECT id, op, timestamp FROM history ORDER BY id DESC LIMIT 1) WHERE op='uploadfile' AND strftime('%s') - timestamp < 18000";
 
   const SQL_SELECT_PATH_HISTORY = "SELECT path FROM history WHERE id=?";
 
@@ -713,6 +713,8 @@ class Database
   const SQL_SELECT_FILE = "SELECT path FROM file WHERE id=? LIMIT 100";
   
   const SQL_SELECT_PATH = "SELECT id FROM file WHERE path=?";
+
+  const SQL_DELETE_FILE_BY_PATH = "DELETE FROM file WHERE path=?";
 
   const SQL_COUNT_FILES = "SELECT count(id) FROM file";
 
@@ -797,11 +799,6 @@ class Database
       $this->insertHistoryStmnt = $this->db->prepare(self::SQL_INSERT_HISTORY);
     }
 
-    // clean up relatives paths to strip leading "./" if it is there
-    if ( 0 == strpos($uploadFilePath, "./") ) {
-      $uploadFilePath = substr($uploadFilePath, 2);
-    }
-
     $this->insertHistoryStmnt->execute(array($uploadFilePath, "uploadfile"));
   }
 
@@ -819,6 +816,11 @@ class Database
       assert(count($all) == 1);
       return $all[0];
     }
+  }
+
+  public function deleteFileByPath($path) {
+    $stmnt = $this->db->prepare(self::SQL_DELETE_FILE_BY_PATH);
+    $stmnt->execute(array($path));
   }
 
   public function deleteHistoryById($id) {
@@ -909,12 +911,14 @@ class FileManager
   function undo($location, $historyid) {
     $path = $this->database->getHistoryPathById($historyid);
     if ($path != null) {
+    print "DELETE " . $path;
       // delete the file
       $fullFilePath = $location->getBasePath() . "/" . $path;
       unlink($fullFilePath);
 
       // delete the history record
       $this->database->deleteHistoryById($historyid);
+      $this->database->deleteFileByPath($path);
     }
   }
 
@@ -1759,7 +1763,13 @@ class Documin
     if ( $historyId != null ) { ?>
 <div id="undo">
    <form name="undo" method="post">
-      <span class="undolabel">Added: <?php print $this->database->getHistoryPathById($historyId);?></span>
+      <span class="undolabel">Added: <?php
+            $historyPath = $this->database->getHistoryPathById($historyId);
+            if ( 0 == strpos($historyPath, "./") ) {
+               $historyPath = substr($historyPath, 2);
+            }
+            print $historyPath; ?>
+       </span>
       <input name="undoid" type="hidden" value="<?php print $historyId; ?>"/>
       <input name="undoop" type="submit" value="Undo" class="undo_submit" />
    </form>
