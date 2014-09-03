@@ -124,7 +124,10 @@ $_TRANSLATIONS["en"] = array(
   "failed_file_chmod" => "Failed to change the permissions of the uploaded file.",
   "page_load_time" => "page load time %.0f ms",
   "file_index_count" => "%d indexed",
-  "file_sum_size" => "%s managed"
+  "file_sum_size" => "%s managed",
+  "unable_to_remove_dir" => "Failed to remove directory",
+  "unable_to_remove_file" => "Failed to remove file",
+  "unable_to_remove_unrecognized_path" => "Failed to remove unrecognized file system entry."
 );
 
 /***************************************************************************
@@ -870,11 +873,15 @@ class FileManager
         return;
       }
 
-      if (!mkdir($location->getDir(true, false, false, 0) . $dirname)) {
+      $newDirPath = $location->getDir(true, false, false, 0) . $dirname;
+      if (!mkdir($newDirPath)) {
         // Error creating a new directory
         Documin::setErrorString("new_dir_failed");
         return;
       }
+
+      // Add a history record for this operation.
+      $this->database->addUploadHistory($newDirPath);
     }
   }
   
@@ -918,9 +925,26 @@ class FileManager
     $path = $this->database->getHistoryPathById($historyid);
     if ($path != null) {
 
-      // delete the file
-      $fullFilePath = $location->getBasePath() . "/" . $path;
-      unlink($fullFilePath);
+      $fullPath = $location->getBasePath() . "/" . $path;
+
+      if ( is_dir($fullPath) ) {
+        if (!rmdir($fullPath)) {
+          Documin::setErrorString("unable_to_remove_dir");
+          return;
+        }
+      }
+      else if ( is_file($fullPath) ) {
+        // delete the file
+        if (!unlink($fullPath)) {
+          Documin::setErrorString("unable_to_remove_file");
+          return;
+        }
+      }
+      else {
+        // error - what is it?
+          Documin::setErrorString("unable_to_remove_unrecognized_path");
+          return;
+      }
 
       // delete the history record
       $this->database->undoHistoryById($historyid);
