@@ -284,11 +284,7 @@ table img{
 	max-width:680px;
 }
 
-#upload #password_container {
-	margin-right:20px;
-}
-
-#upload #newdir_container, #upload #password_container {
+#upload #newdir_container {
 	float:left;
 }
 
@@ -296,12 +292,17 @@ table img{
 	float:right;
 }
 
-#upload input.upload_dirname, #upload input.upload_password{
+#upload input.upload_dirname {
 	width:140px;
 }
 
-#upload input.upload_file{
-	font-size:small;
+#undo {
+	font-family:Verdana;
+	font-size:x-small;
+	margin: 0 auto;
+	margin-top:10px;
+	max-width:680px;
+	text-align:center;
 }
 
 /* Breadcrumbs */
@@ -692,11 +693,19 @@ class ImageServer
 class Database
 {
   const SQL_CREATE_DATABASE = "
+      CREATE TABLE IF NOT EXISTS history (id INTEGER PRIMARY KEY ASC, path TEXT, op TEXT, timestamp INTEGER);
       CREATE TABLE IF NOT EXISTS file (id TEXT, size INTEGER, path TEXT);
       CREATE INDEX IF NOT EXISTS file_id_idx ON file(id);
       CREATE UNIQUE INDEX IF NOT EXISTS file_path_idx ON file(path);
      ";
-  
+
+  const SQL_INSERT_HISTORY = "INSERT INTO history (path, op, timestamp) VALUES (?, ?, strftime('%s'))";
+
+  // select last file upload operation if it is not more than three minutes old
+  const SQL_SELECT_LAST_HISTORY = "SELECT id FROM (SELECT id, op, timestamp FROM history ORDER BY id DESC LIMIT 1) WHERE op='uploadfile' AND strftime('%s') - timestamp < 18000";
+
+  const SQL_SELECT_PATH_HISTORY = "SELECT path FROM history WHERE id=?";
+
   const SQL_INSERT_FILE = "INSERT INTO file VALUES (?, ?, ?)";
   
   const SQL_SELECT_FILE = "SELECT path FROM file WHERE id=? LIMIT 100";
@@ -726,6 +735,7 @@ class Database
   private $insertFileStmnt = null;
   private $selectFileStmnt = null;
   private $selectPathStmnt = null;
+  private $insertHistoryStmnt = null;
   
   public function __construct()
   {
@@ -767,9 +777,7 @@ class Database
       $this->selectFileStmnt = $this->db->prepare(self::SQL_SELECT_FILE);
     }
     
-    $this->selectFileStmnt->execute(array(
-      $id
-    ));
+    $this->selectFileStmnt->execute(array($id));
     return $this->selectFileStmnt->fetchAll(PDO::FETCH_COLUMN, 0);
   }
 
@@ -780,6 +788,31 @@ class Database
   public function getSumSize() {
     return $this->db->query(self::SQL_SUM_SIZE_FILES)->fetchColumn();
   }
+
+  public function addUploadHistory($uploadFilePath)
+  {
+    if ($this->insertHistoryStmnt == null) {
+      $this->insertHistoryStmnt = $this->db->prepare(self::SQL_INSERT_HISTORY);
+    }
+
+    $this->insertHistoryStmnt->execute(array($uploadFilePath, "uploadfile"));
+  }
+
+  public function getLastUploadForUndoIfExists() {
+    return $this->db->query(self::SQL_SELECT_LAST_HISTORY)->fetchColumn();
+  }
+
+  public function getHistoryPathById($id) {
+    $stmnt = $this->db->prepare(self::SQL_SELECT_PATH_HISTORY);
+    $stmnt->execute(array($id));
+    $all = $stmnt->fetchAll(PDO::FETCH_COLUMN, 0);
+    if (count($all) == 0) {
+      return null;
+    } else {
+      assert(count($all) == 1);
+      return $all[0];
+    }
+  }
 }
 
 // 
@@ -787,6 +820,12 @@ class Database
 //
 class FileManager
 {
+  var $database;
+
+  function __construct() {
+    $this->database = new Database();
+  }
+
   function newFolder($location, $dirname)
   {
     if (strlen($dirname) > 0) {
@@ -850,6 +889,9 @@ class FileManager
     } else if (!chmod($upload_file, Documin::getConfig("file_mode"))) {
       Documin::setErrorString("failed_file_chmod");
     }
+
+    // Add a history record for this operation.
+    $this->database->addUploadHistory($location->stripBasePath($upload_file));
   }
     
   //
@@ -1099,9 +1141,22 @@ class Location
       return $this->path[$i];
   }
   
+  function stripBasePath($fullPath)
+  {
+    $basePath = $this->getBasePath();
+    if ( strncmp($basePath, $fullPath, strlen($basePath)) == 0 ) {
+      return substr($fullPath, strlen($basePath) + 1);
+    }
+  }
+
+  function getBasePath()
+  {
+    return strlen(Documin::getConfig('basedir')) > 0 ? Documin::getConfig('basedir') : dirname($_SERVER['SCRIPT_FILENAME']);
+  }
+
   function getFullPath()
   {
-    return (strlen(Documin::getConfig('basedir')) > 0 ? Documin::getConfig('basedir') : dirname($_SERVER['SCRIPT_FILENAME'])) . "/" . $this->getDir(true, false, false, 0);
+    return $this->getBasePath() . "/" . $this->getDir(true, false, false, 0);
   }
   
   //
@@ -1662,16 +1717,27 @@ class Documin
 		<div id="newdir_container">
 			<input name="userdir" type="text" class="upload_dirname" />
 			<input type="submit" value="<?php
-    print $this->getString("make_directory");?>" />
+                            print $this->getString("make_directory");?>" />
 		</div>
 		<div id="upload_container">
 			<input name="userfile" type="file" class="upload_file" />
 			<input type="submit" value="<?php
-    print $this->getString("upload");?>" class="upload_sumbit" />
+                            print $this->getString("upload");?>" class="upload_sumbit" />
 		</div>
-		<div class="bar"></div>
 	</div>
+        <div class="bar"></div>
 </form>
+    <?php $historyId = $this->database->getLastUploadForUndoIfExists();
+    if ( $historyId != null ) { ?>
+<div id="undo">
+   <form name="undo" method="post">
+      <span class="undolabel">Added: <?php print $this->database->getHistoryPathById($historyId);?></span>
+      <input name="undoid" type="hidden" value="<?php print $historyId; ?>"/>
+      <input name="undoop" type="submit" value="Undo (not implemented yet)" class="undo_submit" />
+   </form>
+</div>
+<?php } ?>
+
 <!-- END: Upload area -->
 
 <!-- START: Info area -->
