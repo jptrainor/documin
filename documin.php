@@ -932,20 +932,17 @@ class FileManager
       if ( is_dir($fullPath) ) {
         if (!rmdir($fullPath)) {
           Documin::setErrorString("unable_to_remove_dir");
-          return;
         }
       }
       else if ( is_file($fullPath) ) {
         // delete the file
         if (!unlink($fullPath)) {
           Documin::setErrorString("unable_to_remove_file");
-          return;
         }
       }
       else {
         // error - what is it?
           Documin::setErrorString("unable_to_remove_unrecognized_path");
-          return;
       }
 
       // delete the history record
