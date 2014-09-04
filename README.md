@@ -37,7 +37,7 @@ Configure your web server to expose a file system directory that you want to man
    * To integrate with such a system *documin* may expose a list of the files it has under management - that's it.
 * File deletion, movement, user security, file admin, etc.
    * *documin* is specifically intended to provide an add-only write interface. A system administrator can do all other necessary management via ordinary file system interfaces.
-      * An exception is that the user is permit to undo an operation completed in the prior minutes.
+      * An exception is undo of operations completed in the prior five minutes.
 * No support for file thumbnails, fancy image browsing, icon support of a wide variety of file types (a limited set is okay), any sort of server side image preview generation.
 
 ## Referencing Files By ID
