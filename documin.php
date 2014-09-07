@@ -101,6 +101,9 @@ $_CONFIG['hash_type'] = "md5int32";
 // File mode for new uploads
 $_CONFIG['file_mode'] = 0444;
 
+// File operation undo time limit in seconds.
+$_CONFIG['undo_time_limit_seconds'] = 600;
+
 /***************************************************************************
  *   Translations
  ***************************************************************************/
@@ -598,7 +601,7 @@ $_IMAGES["png"]  = $_IMAGES["image"];
  ***************************************************************************/
 
 // thanks: stackoverflow
-function getScriptUrl()
+function getScriptUrlWithoutQuery()
 {
   $uri = $_SERVER['REQUEST_URI'];
   if (strpos($uri, "?") !== false) {
@@ -613,6 +616,11 @@ function getScriptUrl()
   }
   
   return $protocol . "://" . $_SERVER['HTTP_HOST'] . $uri;
+}
+
+function getScriptUrlWithQuery()
+{
+  return getScriptUrlWithoutQuery() . "?" . $_SERVER['QUERY_STRING'];
 }
 
 function getScriptRootDir() {
@@ -704,12 +712,12 @@ class Database
 
   const SQL_INSERT_HISTORY = "INSERT INTO history (path, op, undone, timestamp) VALUES (?, ?, 0, strftime('%s'))";
 
-  // Select last file upload operation if it is not more than five 
-  // minutes old. (Translation: the user has five minutes to execute
-  // the undo.) The sqlite time stamp has one second resolution.
-  const SQL_SELECT_LAST_HISTORY = "SELECT id FROM (SELECT id, op, timestamp FROM history WHERE undone=0 ORDER BY id DESC LIMIT 1) WHERE op='uploadfile' AND strftime('%s') - timestamp < 300";
+  // select last file upload operation if it is not more than three minutes old
+  const SQL_SELECT_LAST_HISTORY = "SELECT id FROM (SELECT id, op, timestamp FROM history WHERE undone=0 ORDER BY id DESC LIMIT 1) WHERE op='uploadfile' AND strftime('%s') - timestamp < CAST(? AS INTEGER)";
 
   const SQL_SELECT_PATH_HISTORY = "SELECT path FROM history WHERE id=?";
+
+  const SQL_SELECT_DELTAT_HISTORY = "SELECT strftime('%s') - timestamp FROM history WHERE id=?";
 
   const SQL_UPDATE_HISTORY_UNDONE = "UPDATE history SET undone=1 WHERE id=?";
 
@@ -807,19 +815,7 @@ class Database
     $this->insertHistoryStmnt->execute(array($uploadFilePath, "uploadfile"));
   }
 
-  public function getLastUploadForUndoIfExists() {
-    $result = $this->db->query(self::SQL_SELECT_LAST_HISTORY);
-    if ($result != null) {
-       return $result->fetchColumn();
-    }
-    else {
-       return null;
-    }
-  }
-
-  public function getHistoryPathById($id) {
-    $stmnt = $this->db->prepare(self::SQL_SELECT_PATH_HISTORY);
-    $stmnt->execute(array($id));
+  private function fetchAllFirstResult($stmnt) {
     $all = $stmnt->fetchAll(PDO::FETCH_COLUMN, 0);
     if (count($all) == 0) {
       return null;
@@ -827,6 +823,25 @@ class Database
       assert(count($all) == 1);
       return $all[0];
     }
+  }
+
+  public function getLastUploadForUndoIfExists() {
+    $stmnt = $this->db->prepare( self::SQL_SELECT_LAST_HISTORY );
+    $stmnt->execute(array(Documin::getConfig('undo_time_limit_seconds')));
+    return $this->fetchAllFirstResult($stmnt);
+  }
+
+  public function getHistoryPathById($id) {
+    $stmnt = $this->db->prepare(self::SQL_SELECT_PATH_HISTORY);
+    $stmnt->execute(array($id));
+    return $this->fetchAllFirstResult($stmnt);
+  }
+
+  public function getUndoTimeRemaining($id) {
+    $stmnt = $this->db->prepare(self::SQL_SELECT_DELTAT_HISTORY);
+    $stmnt->execute(array($id));
+    $time = $this->fetchAllFirstResult($stmnt);
+    return Documin::getConfig('undo_time_limit_seconds') - $time;
   }
 
   public function deleteFileByPath($path) {
@@ -846,6 +861,14 @@ class Database
 class FileManager
 {
   var $database;
+
+  public static function handleFileRequest() {
+    $location = new Location();
+    $fm = new FileManager();
+    $fm->run($location);
+  }
+
+
 
   function __construct() {
     $this->database = new Database();
@@ -932,17 +955,20 @@ class FileManager
       if ( is_dir($fullPath) ) {
         if (!rmdir($fullPath)) {
           Documin::setErrorString("unable_to_remove_dir");
+          return;
         }
       }
       else if ( is_file($fullPath) ) {
         // delete the file
         if (!unlink($fullPath)) {
           Documin::setErrorString("unable_to_remove_file");
+          return;
         }
       }
       else {
         // error - what is it?
           Documin::setErrorString("unable_to_remove_unrecognized_path");
+          return;
       }
 
       // delete the history record
@@ -952,24 +978,40 @@ class FileManager
   }
 
   //
-  // The main function, checks if the user wants to perform any supported operations
+  // The main function, checks if the user wants to perform any
+  // supported operations.
   //
-  function run($location)
+  private function run($location)
   {
+    $handled = false;
+  
     if (isset($_POST['undoid']) && strlen($_POST['undoid']) > 0) {
       $this->undo($location, $_POST['undoid']);
+      $handled = true;
     }
 
     if (isset($_POST['userdir']) && strlen($_POST['userdir']) > 0) {
       if ($location->uploadAllowed()) {
         $this->newFolder($location, $_POST['userdir']);
+        $handled = true;
       }
     }
     
     if (isset($_FILES['userfile']['name']) && strlen($_FILES['userfile']['name']) > 0) {
       if ($location->uploadAllowed()) {
         $this->uploadFile($location, $_FILES['userfile']);
+        $handled = true;
       }
+    }
+
+    if ($handled) {
+       // Post/Redirect/Get pattern to avoid repost on browser refresh.
+       header("HTTP/1.1 303 See Other");
+       header("Location: " . getScriptUrlWithQuery());
+       return true;
+    }
+    else {
+       return false;
     }
   }
 }
@@ -1272,7 +1314,7 @@ class FileRedirector
   
   function filePathToUrl($relPath)
   {
-    $scriptUrl = getScriptUrl();
+    $scriptUrl = getScriptUrlWithoutQuery();
     
     // If it ends in "/" then we've access the default script (e.g. documin.php),
     // if not then we a accessed a named script (e.g. documin.php) and that 
@@ -1366,8 +1408,6 @@ class Documin
   {
     $l  = new Location();
     $d  = new Documin($l);
-    $fm = new FileManager();
-    $fm->run($l);
     $d->run($l);
     return true;
   }
@@ -1384,7 +1424,7 @@ class Documin
   private function init()
   {
     $this->database  = new Database();
-    $this->scriptUrl = getScriptUrl();
+    $this->scriptUrl = getScriptUrlWithoutQuery();
     
     $this->sort_by = "";
     $this->sort_as = "";
@@ -1797,10 +1837,16 @@ class Documin
             if ( 0 == strpos($historyPath, "./") ) {
                $historyPath = substr($historyPath, 2);
             }
-            print $historyPath; ?>
+            print "$historyPath"; ?>
        </span>
       <input name="undoid" type="hidden" value="<?php print $historyId; ?>"/>
       <input name="undoop" type="submit" value="Undo" class="undo_submit" />
+      <span class="undolabel"> <?php
+        $timeRemaining = $this->database->getUndoTimeRemaining($historyId);
+        print " within the next ";
+        print gmdate("H:i:s", $timeRemaining);
+      ?>
+      </span>
    </form>
 </div>
 <?php } ?>
@@ -1862,7 +1908,7 @@ class FileIndexer
     $contexts = array();
     foreach ($subDirs as $dir) {
       $link = $documin->makeLink(false, false, null, null, null, $location->getDir(false, true, false, 0) . $dir->getNameEncoded());
-      $subDirAccessLink = getScriptUrl() . $link . "&do_recursive_sub_index";
+      $subDirAccessLink = getScriptUrlWithoutQuery() . $link . "&do_recursive_sub_index";
       
       $ch = curl_init();
       curl_setopt($ch, CURLOPT_URL, $subDirAccessLink);
@@ -1924,7 +1970,7 @@ the Creative Commons Attribution 3.0 License. The <a
 href="http://commons.wikimedia.org/wiki/File:Replacement_filing_cabinet.svg">file
 cabinet image</a> is in the public domain.</p>
 
-<p>Version 0.9.2 (3 Sept 2014)</p>
+<p>Version 0.9.1 (3 June 2014)</p>
 <hr>
 Admin commands:
 <ul>
@@ -1951,6 +1997,7 @@ else if ( AdminRequest::handleAdminRequest()    ) {}
 else if ( FileRedirector::handleFileRedirect()  ) {}
 else if ( Database::handleRemoveRequest()       ) {}
 else if ( FileIndexer::handleFileIndexRequest() ) {}
+else if ( FileManager::handleFileRequest()      ) {}
 else if ( Documin::handleBrowseRequest()        ) {}
 
 ?>
