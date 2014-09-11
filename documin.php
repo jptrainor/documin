@@ -1970,7 +1970,7 @@ the Creative Commons Attribution 3.0 License. The <a
 href="http://commons.wikimedia.org/wiki/File:Replacement_filing_cabinet.svg">file
 cabinet image</a> is in the public domain.</p>
 
-<p>Version 0.9.1 (3 June 2014)</p>
+<p>Version 0.9.3 (11 Sept 2014)</p>
 <hr>
 Admin commands:
 <ul>
