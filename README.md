@@ -40,6 +40,10 @@ Configure your web server to expose a file system directory that you want to man
       * An exception is undo of operations completed in the prior five minutes.
 * No support for file thumbnails, fancy image browsing, icon support of a wide variety of file types (a limited set is okay), any sort of server side image preview generation.
 
+## File Drag and Drop
+
+ *documin* support drag and drop file submission using [Dropzonejs] (http://www.dropzonejs.com). The *documin* web page will attempt to load [dropzone.js[ (https://raw.github.com/enyo/dropzone/master/dist/dropzone.js) from the directory where documin.php resides. If it succeeds then a drop area is enabled on the web page. If dropzone.js is missing, or if for any reason initialization of dropzone fails, then *documin* functions normally but without the drop area.
+
 ## Referencing Files By ID
 
 Use a web browser to visit the directory where documin.php was placed on your server. Browse the directory tree to locate the file to which you want to link. Note the ID field, each ID is a path independent link to the file, e.g.:

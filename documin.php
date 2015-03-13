@@ -57,11 +57,15 @@ $_CONFIG['show_info'] = true;
 // The time format for the "last changed" column.
 $_CONFIG['time_format'] = "d.m.y H:i:s";
 
+// The timezone of the server. Any value that is suitable
+// for use with data_default_timezone_set(value).
+$_CONFIG['timezone'] = "America/New_York";
+
 // Charset. Use the one that is suitable for you. 
 $_CONFIG['charset'] = "UTF-8";
 
 // Regular expression to match files that should be hidden.
-$_CONFIG['hidden_file_regex'] = "/^\\.|~$|index.php|documin.php|documin.sqlite/";
+$_CONFIG['hidden_file_regex'] = "/^\\.|~$|dropzone.js|index.php|documin.php|documin.sqlite/";
 
 // Regular expression to match directories that should be hidden.
 $_CONFIG['hidden_dir_regex'] = "";
@@ -273,12 +277,12 @@ table img{
 
 #info {
 	color:#000000;
-	font-family:Verdana;
 	max-width:680px;
 	position: relative;
         margin: auto;
 	margin-top: 10px;
 	text-align:center;
+	font-family:Verdana;
 	font-size:x-small;
 }
 
@@ -286,7 +290,8 @@ table img{
 
 #upload {
 	margin: 0 auto;
-	margin-top:2px;
+	margin-top:10px;
+	margin-bottom:10px;
 	max-width:680px;
 }
 
@@ -294,12 +299,44 @@ table img{
 	float:left;
 }
 
-#upload #upload_container{
+#upload #upload_container {
 	float:right;
 }
 
 #upload input.upload_dirname {
 	width:140px;
+        border: 3px solid;
+        border-color: buttonface;
+}
+
+#upload input.dirname_submit {
+	width:60px;
+}
+
+#upload input.upload_file {
+	width:240px;
+        border: 3px solid;
+        border-color: buttonface;
+	font-family:Verdana;
+	font-size:x-small;
+}
+
+
+#upload input.upload_submit {
+	width:60px;
+}
+
+#droparea {
+       margin: 10;
+       width: 300px;
+       height: 50px;
+       line-height: 50px;
+       margin-top: 10px;
+       margin-bottom: 10px;
+       background-color: buttonface;
+       float: right;
+       text-align: center;
+       vertical-align: middle;
 }
 
 #undo {
@@ -1423,6 +1460,8 @@ class Documin
   // 
   private function init()
   {
+    date_default_timezone_set(Documin::getConfig("timezone"));
+
     $this->database  = new Database();
     $this->scriptUrl = getScriptUrlWithoutQuery();
     
@@ -1813,11 +1852,11 @@ class Documin
 </div>
 
 <!-- START: Upload area -->
-<form enctype="multipart/form-data" method="post">
-	<div id="upload">
+<div id="upload">
+    <form enctype="multipart/form-data" method="post">
 		<div id="newdir_container">
 			<input name="userdir" type="text" class="upload_dirname" />
-			<input type="submit" value="<?php
+			<input type="submit" class="dirname_submit" value="<?php
                             print $this->getString("make_directory");?>" />
 		</div>
 		<div id="upload_container">
@@ -1825,9 +1864,29 @@ class Documin
 			<input type="submit" value="<?php
                             print $this->getString("upload");?>" class="upload_sumbit" />
 		</div>
-	</div>
-        <div class="bar"></div>
-</form>
+    </form>
+    <div class="bar"></div>
+    <div id="droparea">drop zone</div>
+</div>
+<div class="bar"></div>
+
+<script src="dropzone.js"></script>
+<script>
+    try {
+      var myDropzone = new Dropzone("div#droparea",
+          { url: document.URL,
+             paramName: "userfile",
+             previewTemplate : '<div style="display:none"></div>'
+          });
+      myDropzone.on("queuecomplete", function(file) { location.reload(); });
+      window.console.log("dropzone enabled");
+    }
+    catch(err) {
+      window.console.log("dropzone disabled");
+      document.getElementById("droparea").style.display = "none";
+    }
+</script>
+
     <?php $historyId = $this->database->getLastUploadForUndoIfExists();
     if ( $historyId != null ) { ?>
 <div id="undo">
