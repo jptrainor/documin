@@ -42,7 +42,7 @@ Configure your web server to expose a file system directory that you want to man
 
 ## File Drag and Drop
 
- *documin* support drag and drop file submission using [Dropzonejs] (http://www.dropzonejs.com). The *documin* web page will attempt to load [dropzone.js[ (https://raw.github.com/enyo/dropzone/master/dist/dropzone.js) from the directory where documin.php resides. If it succeeds then a drop area is enabled on the web page. If dropzone.js is missing, or if for any reason initialization of dropzone fails, then *documin* functions normally but without the drop area.
+ *documin* support drag and drop file submission using [DropzoneJS] (http://www.dropzonejs.com). The *documin* web page will attempt to load [dropzone.js[ (https://raw.github.com/enyo/dropzone/master/dist/dropzone.js) from the directory where documin.php resides. If it succeeds then a drop area is enabled on the web page. If dropzone.js is missing, or if for any reason initialization of dropzone fails, then *documin* functions normally but with the drop area hidden.
 
 ## Referencing Files By ID
 
