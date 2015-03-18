@@ -2048,7 +2048,7 @@ Admin commands:
 
 //
 // PHP Entry Point
-// Only the first to handle a request one is executed.
+// Only the first one to handle a request is executed.
 //
 
 if      ( ImageServer::handleImageRequest()     ) {}
