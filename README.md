@@ -28,21 +28,9 @@ Configure your web server to expose a file system directory that you want to man
 * No security implemented by the web interface beyond the add-only interface.
     * Security is left to the underlying web server, operating system, and file system configuration.
 
-## Non-Requirements
-
-*documin* is intentionally simple. It was specifically _not_ created to meet the following requirements and likely never will be modified to do so, even though it may be tempting and technically feasible:
-
-* Text search of the indexed files.
-   * This is better handled by a dedicated external search system.
-   * To integrate with such a system *documin* may expose a list of the files it has under management - that's it.
-* File deletion, movement, user security, file admin, etc.
-   * *documin* is specifically intended to provide an add-only write interface. A system administrator can do all other necessary management via ordinary file system interfaces.
-      * An exception is undo of operations completed in the prior five minutes.
-* No support for file thumbnails, fancy image browsing, icon support of a wide variety of file types (a limited set is okay), any sort of server side image preview generation.
-
 ## File Drag and Drop
 
- *documin* support drag and drop file submission using [DropzoneJS] (http://www.dropzonejs.com). The *documin* web page will attempt to load [dropzone.js] (https://raw.github.com/enyo/dropzone/master/dist/dropzone.js) from the directory where documin.php resides. If it succeeds then a drop area is enabled on the web page. If dropzone.js is missing, or if for any reason initialization of dropzone fails, then *documin* functions normally but with the drop area hidden.
+ *documin* supports drag and drop file submission using [DropzoneJS] (http://www.dropzonejs.com). The *documin* web page will attempt to load [dropzone.js] (https://raw.github.com/enyo/dropzone/master/dist/dropzone.js) from the directory where documin.php resides. If it succeeds then a drop area is enabled on the web page. If dropzone.js is missing, or if for any reason initialization of dropzone fails, then *documin* functions normally but with the drop area hidden.
 
 ## Referencing Files By ID
 
