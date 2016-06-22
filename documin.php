@@ -1374,7 +1374,7 @@ class FileRedirector
       header("HTTP/1.0 404 Not Found");
       print("No document found for fileid: " . "$this->fileid");
     } else if (count($paths) == 1) {
-      header("Location: " . $this->filePathToUrl($paths[0]));
+      header("Location: " . $this->filePathToUrl($paths[0]) . "#fileid=" . "$this->fileid" );
     } else {
       $this->outputFileChoices($paths);
     }
@@ -1417,7 +1417,7 @@ class FileRedirector
 <?php
     print("<p>Multiple files exist with fileid: $this->fileid.</p>");
     foreach ($paths as $path) {
-      print "<a href=\"" . $this->filePathToUrl($path) . "\">" . $path . "</a><br>";
+      print "<a href=\"" . $this->filePathToUrl($path) . "#fileid=" . "$this->fileid" . "\">" . $path . "</a><br>";
     }
 ?>
 </body>
