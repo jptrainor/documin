@@ -1817,7 +1817,7 @@ class Documin
         print "<td class=\"icon\"><img alt=\"" . $file->getType() . "\" src=\"" . $this->makeIcon($file->getType()) . "\" /></td>\n";
         print "<td class=\"name\">\n";
 
-        print "\t\t<a href=\"" . $this->location->getDir(false, true, false, 0) . $file->getNameEncoded() . "#fileid=" . $file->getFileID() "\"";
+        print "\t\t<a href=\"" . $this->location->getDir(false, true, false, 0) . $file->getNameEncoded() . "#fileid=" . $file->getFileID() . "\"";
         if (Documin::getConfig('open_in_new_window') == true) {
           print " target=\"_blank\"";
         }
