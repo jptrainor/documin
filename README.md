@@ -55,4 +55,4 @@ The admin interface provides the ability to delete the *documin* database and to
 
 ## Credits
 
-The simple single file structure of documin.php was inspired by, and derived from, [Encode Explorer] (http://encode-explorer.siineiolekala.net). Everything that didn't meet the *documin* requirements was removed from the original Encode Explorer code. New code was added to support file id generation, database management, file linking by id, and file drag and drop. The database is [SQLite](http://www.sqlite.org). File drag and drop support is provided by [DropzoneJS] (http://www.dropzonejs.com).
+The simple single file structure of documin.php was inspired by, and derived from, [Encode Explorer] (http://encode-explorer.siineiolekala.net). Everything that didn't meet the *documin* requirements was removed from the original Encode Explorer code. New code was added to support file id generation, database management, file linking by id, and file drag and drop. The database is [SQLite](http://www.sqlite.org). File drag and drop support is provided by [DropzoneJS](http://www.dropzonejs.com).
