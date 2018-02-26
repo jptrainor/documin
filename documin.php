@@ -43,7 +43,8 @@ $_CONFIG['lang'] = "en";
 $_CONFIG['open_in_new_window'] = false;
 
 // Will the page header be displayed? 0=no, 1=yes. 
-$_CONFIG['show_top'] = true;
+$_CONFIG['show_top'] = false;
+
 //
 // The page title
 $_CONFIG['main_title'] = "documin";
@@ -216,7 +217,7 @@ div.subtitle{
 }
 
 input {
-	border: 1px solid #CDD2D6;
+	border: 3px solid #CDD2D6;
 }
 
 .bar{
@@ -306,7 +307,8 @@ table img{
 #upload input.upload_dirname {
 	width:140px;
         border: 3px solid;
-        border-color: buttonface;
+        border-color: #CDD2D6;
+	margin: 5px 0 5px 0;
 }
 
 #upload input.dirname_submit {
@@ -314,11 +316,13 @@ table img{
 }
 
 #upload input.upload_file {
-	width:240px;
+	width:100%;
         border: 3px solid;
-        border-color: buttonface;
+        border-color: #CDD2D6;
 	font-family:Verdana;
 	font-size:x-small;
+	padding: 3px;
+	margin: 5px 0 5px 0;
 }
 
 
@@ -327,16 +331,19 @@ table img{
 }
 
 #droparea {
-       margin: 10;
-       width: 300px;
+       width: 100%;
        height: 50px;
        line-height: 50px;
        margin-top: 10px;
        margin-bottom: 10px;
-       background-color: buttonface;
-       float: right;
        text-align: center;
        vertical-align: middle;
+       background-color: #CDD2D6;
+       padding: 5px;
+}
+
+#droparea[data-state="dragenter"] {
+       background-color: #33a532;
 }
 
 #undo {
@@ -1863,22 +1870,32 @@ class Documin
 			<input name="userfile" type="file" class="upload_file" />
 			<input type="submit" value="<?php
                             print $this->getString("upload");?>" class="upload_sumbit" />
+	                <div id="droparea">drop zone</div>
 		</div>
     </form>
     <div class="bar"></div>
-    <div id="droparea">drop zone</div>
 </div>
 <div class="bar"></div>
 
 <script src="dropzone.js"></script>
 <script>
+    function onDragEnter() {
+        document.getElementById("droparea").dataset.state="dragenter";
+    }
+
+    function onDragLeave() {
+        document.getElementById("droparea").dataset.state="dragleave";
+    }
+
     try {
-      var myDropzone = new Dropzone("div#droparea",
+      var myDropzone = new Dropzone("#droparea",
           { url: document.URL,
              paramName: "userfile",
              previewTemplate : '<div style="display:none"></div>'
           });
       myDropzone.on("queuecomplete", function(file) { location.reload(); });
+      myDropzone.on("dragenter", onDragEnter);
+      myDropzone.on("dragleave", onDragLeave);
       window.console.log("dropzone enabled");
     }
     catch(err) {
