@@ -1978,42 +1978,19 @@ class FileIndexer
     $documin  = new Documin($location);
     $documin->processDir();
     $subDirs = $documin->getSubDirs();
-    
-    $mh = curl_multi_init();
-    
-    $contexts = array();
+
     foreach ($subDirs as $dir) {
-      $link = $documin->makeLink(false, false, null, null, null, $location->getDir(false, true, false, 0) . $dir->getNameEncoded());
+      $path = $location->getDir(false, true, false, 0) . $dir->getNameEncoded();
+      $link = $documin->makeLink(false, false, null, null, null, $path);
       $subDirAccessLink = getScriptUrlWithoutQuery() . $link . "&do_recursive_sub_index";
-      
+
       $ch = curl_init();
       curl_setopt($ch, CURLOPT_URL, $subDirAccessLink);
-      curl_setopt($ch, CURLOPT_HEADER, 0);
-      curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-      curl_multi_add_handle($mh, $ch);
-      
-      $contexts[$link] = $ch;
+      curl_exec($ch);
+      curl_close($ch);
+
+      print $path . "<br>";
     }
-    
-    $running = null;
-    do {
-      $mrc = curl_multi_exec($mh, $running);
-    } while ($running > 0);
-    
-    $result = $this->isSubIndex ? "" : "indexed directories:<br>";
-    
-    foreach ($contexts as $link => $ch) {
-      $result .= curl_multi_getcontent($ch);
-    }
-    
-    foreach ($contexts as $link => $ch) {
-      curl_multi_remove_handle($mh, $ch);
-    }
-    curl_multi_close($mh);
-    
-    $result = $result . $location->getDir(true, false, true, 0) . "<br>";
-    
-    print $result;
   }
 }
 
@@ -2046,7 +2023,7 @@ the Creative Commons Attribution 3.0 License. The <a
 href="http://commons.wikimedia.org/wiki/File:Replacement_filing_cabinet.svg">file
 cabinet image</a> is in the public domain.</p>
 
-<p>Version 0.9.4 (13 March 2015)</p>
+<p>Version 0.9.5 (18 April 2018)</p>
 <hr>
 Admin commands:
 <ul>
