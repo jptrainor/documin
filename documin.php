@@ -1012,7 +1012,6 @@ class FileManager
       else {
         // error - what is it?
           Documin::setErrorString("unable_to_remove_unrecognized_path");
-          return;
       }
 
       // delete the history record
