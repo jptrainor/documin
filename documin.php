@@ -66,7 +66,7 @@ $_CONFIG['timezone'] = "America/New_York";
 $_CONFIG['charset'] = "UTF-8";
 
 // Regular expression to match files that should be hidden.
-$_CONFIG['hidden_file_regex'] = "/^\\.|~$|dropzone.js|index.php|documin.php|documin.sqlite/";
+$_CONFIG['hidden_file_regex'] = "/^\\.|~$|index.php|documin.php|documin.sqlite/";
 
 // Regular expression to match directories that should be hidden.
 $_CONFIG['hidden_dir_regex'] = "";
@@ -1877,7 +1877,7 @@ class Documin
 </div>
 <div class="bar"></div>
 
-<script src="dropzone.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.4.0/dropzone.js"></script>
 <script>
     function onDragEnter() {
         document.getElementById("droparea").dataset.state="dragenter";
