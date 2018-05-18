@@ -18,7 +18,7 @@ Configure your web server to expose a file system directory that you want to man
 * Web browser interface to an ordinary file system where file records are archived.
 * Write access to the archive file system, via a web browser, in order to add new files and directories.
     * No ability to modify files - i.e. an "add only" interface.
-			* Limited ability to delete files and directories in the form of a time limited undo operation.
+    * Limited ability to delete files and directories in the form of a time limited undo operation.
 * Reference files by ID as a query parameter to a simple URL.
 * References by ID are unaffected by reorganization of the files (e.g. manually changing the layout of directory tree used to organize the files), moving to a different server, changing the database, restoring the files from a backup, etc.
 * Identify archived file duplication.
