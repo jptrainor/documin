@@ -2,7 +2,7 @@
 
 /*
  * documin - minimal document management system
- * Copyright (C) 2014-2018 Jim Trainor
+ * Copyright (C) 2014-2023 Jim Trainor
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1070,7 +1070,7 @@ class Dir
   //
   // Constructor
   // 
-  function Dir($name, $location)
+  function __construct($name, $location)
   {
     $this->name     = $name;
     $this->location = $location;
@@ -1108,7 +1108,7 @@ class File
   //
   // Constructor
   // 
-  function File($database, $name, $location)
+  function __construct($database, $name, $location)
   {
     $this->name     = $name;
     $this->location = $location;
@@ -2003,7 +2003,7 @@ class AdminRequest
     if (isset($_GET['admin'])) {
 
 ?> <h2><a href="https://github.com/jptrainor/documin">documin -
-minimal document management system</a></h2> Copyright &copy; 2018 Jim
+minimal document management system</a></h2> Copyright &copy; 2023 Jim
 Trainor</p> <p>This program is free software: you can redistribute it
 and/or modify it under the terms of the GNU General Public License as
 published by the Free Software Foundation, either version 3 of the
@@ -2022,7 +2022,7 @@ the Creative Commons Attribution 3.0 License. The <a
 href="http://commons.wikimedia.org/wiki/File:Replacement_filing_cabinet.svg">file
 cabinet image</a> is in the public domain.</p>
 
-<p>Version 0.9.5 (18 April 2018)</p>
+<p>Version 0.9.6 (18 April 2023)</p>
 <hr>
 Admin commands:
 <ul>
