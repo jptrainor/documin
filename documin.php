@@ -957,8 +957,6 @@ class FileManager
   function uploadFile($location, $userfile)
   {
     $name = basename($userfile['name']);
-    if (get_magic_quotes_gpc())
-      $name = stripslashes($name);
     
     $upload_dir  = $location->getFullPath();
     $upload_file = $upload_dir . $name;
