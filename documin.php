@@ -312,7 +312,6 @@ table img{
 }
 
 #upload input.dirname_submit {
-	width:60px;
 }
 
 #upload input.upload_file {
