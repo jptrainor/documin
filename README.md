@@ -58,6 +58,7 @@ The admin interface provides the ability to delete the *documin* database and to
 *documin* was last tested on Ubuntu Server 22.04 using PHP 8.1. In addition to the base ```apache2``` and ```php``` packages, the following must be installed:
 
 ```
+apt-get install php-sqlite3
 atp-get install php-bcmath
 atp-get install php-curl
 ```
