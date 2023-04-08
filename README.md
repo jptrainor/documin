@@ -9,7 +9,7 @@
 
 ## Getting Started
 
-Configure your web server to expose a file system directory that you want to manage. Copy documin.php to the root of the managed directory tree. Optionally rename documin.php to index.php. Be sure the directory is writable by the web server process. Optionally review and change the configuration settings in documin.php. That's it, you're done!
+Configure your web server to expose a file system directory that you want to manage. Enable [PHP](#php-environment) on your web server. Copy documin.php to the root of the managed directory tree. Optionally rename documin.php to index.php. Be sure the directory is writable by the web server process. Optionally review and change the configuration settings in documin.php. That's it, you're done!
 
 ## Requirements
 
