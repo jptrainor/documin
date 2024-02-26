@@ -69,6 +69,16 @@ The PHP PDO and PDO SQLite modules must be enabled:
 phpenmod pdo
 phpenmod pdo_sqlite
 ```
+
+Take note of the file upload limits set in your `php.ini` file, particularly the settings:
+
+```
+upload_max_filesize
+max_file_uploads
+```
+
+Currently, a file upload that exceeds these limits will fail silently ([bug 7](https://github.com/jptrainor/documin/issues/7)).
+
  
 ## Credits
 
