@@ -2000,7 +2000,7 @@ class AdminRequest
     if (isset($_GET['admin'])) {
 
 ?> <h2><a href="https://github.com/jptrainor/documin">documin -
-minimal document management system</a></h2> Copyright &copy; 2023 Jim
+minimal document management system</a></h2> Copyright &copy; 2024 Jim
 Trainor</p> <p>This program is free software: you can redistribute it
 and/or modify it under the terms of the GNU General Public License as
 published by the Free Software Foundation, either version 3 of the
