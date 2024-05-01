@@ -138,6 +138,29 @@ $_TRANSLATIONS["en"] = array(
   "unable_to_remove_unrecognized_path" => "Failed to remove unrecognized file system entry."
 );
 
+// Arabic - اللغة العربية
+$_TRANSLATIONS["ar"] = array(
+  "file_name" => "اسم الملف",
+  "size" => "حجم",
+  "last_changed" => "آخر تحديث",
+  "upload" => "رفع",
+  "failed_upload" => "فشلت عملية رفع الملف",
+  "failed_move" => "فشلت عملية نقل الملف الى المجلد بالجهة اليمنى",
+  "make_directory" => "مجلد جديد",
+  "new_dir_failed" => "فشل عمل مجلد جديد",
+  "unable_to_read_dir" => "المسار غير قابل للقراءة",
+  "upload_not_allowed" => "اعدادات البرنامج لا تسمح برفع الملفات الى هذا المسار",
+  "upload_dir_not_writable" => "هذا المسار لا يملك  اذونات الكتابة",
+  "upload_type_not_allowed" => "غير مسموح بهذا النوع من الملفات",
+  "failed_file_chmod" => "فشلت عملية تعديل الاذونات للملف المرفوع",
+  "page_load_time" => "تم تحميل الصفحة خلال  %.0f ميكروثانية",
+  "file_index_count" => "%d تمت الفهرسة لـ",
+  "file_sum_size" => "%s متحكم",
+  "unable_to_remove_dir" => "فشلت عملية حذف المجلد",
+  "unable_to_remove_file" => "فشلت عملية حذف الملف",
+  "unable_to_remove_unrecognized_path" => "فشلت عملية حذف المسار الغير معروف"
+);
+
 /***************************************************************************
  *  CSS Styles
  ***************************************************************************/
